@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35122.118
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YumBlazor", "YumBlazor\YumBlazor.csproj", "{7AB1AE46-3B29-41CF-9BC8-3B37A7D64774}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7AB1AE46-3B29-41CF-9BC8-3B37A7D64774}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7AB1AE46-3B29-41CF-9BC8-3B37A7D64774}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7AB1AE46-3B29-41CF-9BC8-3B37A7D64774}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7AB1AE46-3B29-41CF-9BC8-3B37A7D64774}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2D81F523-7597-4161-A28D-B5310DAC755D}
+	EndGlobalSection
+EndGlobal
