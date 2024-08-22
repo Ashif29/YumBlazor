@@ -1,11 +1,12 @@
 ﻿@page "/category/create"
 @page "/category/update/{id:int}"
 
-
 @using YumBlazor.Data.Models
 @using YumBlazor.Repository.IRepository
-@inject ICategoryRepository _categoryRepository
+@using YumBlazor.Services.Extentions
 
+@inject ICategoryRepository _categoryRepository
+@inject IJSRuntime _JS
 @inject NavigationManager _navigationManager
 
 @if (IsProcessing)
@@ -90,11 +91,13 @@ else
         {
             //Create
             await _categoryRepository.CreateAsync(Category);
+            await _JS.ToastrSuccess("Category Created Successfully");
         }
         else
         {
             //Update
             await _categoryRepository.UpdateAsync(Category);
+            await _JS.ToastrSuccess("Category Updated Successfully");
         }
         IsProcessing = false;
 
