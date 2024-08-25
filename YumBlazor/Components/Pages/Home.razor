@@ -1,7 +1,105 @@
-﻿@page "/"
+﻿
+@page "/"
+@using YumBlazor.Data.Models
+@using YumBlazor.Repository.IRepository
+@using YumBlazor.Services.Extentions
 
-<PageTitle>Home</PageTitle>
+@inject IProductRepository _productRepository
+@inject IJSRuntime _JS
 
-<h1>Hello, world!</h1>
+<_BsModal OnModalConfirmation="ConfirmBuyClick"
+          Title="Are you sure to buy this Product?"
+          ButtonBootstrapStyle="btn-success"
+          ButtonText="Shop Now">
+</_BsModal>
 
-Welcome to your new app.
+<div class="jumbotron text-center">
+    <h1>Welcome to YumBlazor</h1>
+    <p>Discover the best products at unbeatable prices</p>
+    <a href="#" class="btn btn-primary">Shop Now</a>
+</div>
+
+@if (IsProcessing)
+{
+    <div class="position-absolute w-75 h-75 d-flex flex-column align-items-center bg-white justify-content-center">
+        <img src="/images/loading.gif" alt="loading" />
+    </div>
+}
+else
+{
+    <div class="container my-4">
+        <h2 class="text-center">Our Products</h2>
+        <hr />
+        <div class="row">
+            @if (Products.Any())
+            {
+                @foreach (var obj in Products)
+                {
+                    <div class="col-md-4 col-sm-6 mb-4">
+                        <div class="card">
+                            <img class="card-img-top" src="@obj.ImageUrl" alt="Product Image">
+                            <div class="card-body">
+                                <h5 class="card-title">@obj.Name</h5>
+                                <p class="card-text">BDT : @obj.Price</p>
+                                <button class="btn btn-primary" @onclick="() => HandleAddToCart(obj.Id)">
+                                    <i class="bi bi-cart-plus"></i> Add To Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+}
+
+@code {
+    public bool IsProcessing { get; set; } = true;
+
+    private IEnumerable<Product> Products { get; set; } = new List<Product>();
+
+    private int BuyProductId { get; set; } = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await LoadProducts();
+            IsProcessing = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task LoadProducts()
+    {
+        Products = await _productRepository.GetAllAsync();
+    }
+
+    private void HandleAddToCart(int id)
+    {
+        BuyProductId = id;
+        _JS.InvokeVoidAsync("ShowConfirmationModal");
+    }
+
+    private async Task ConfirmBuyClick(bool IsConfirmed)
+    {
+        IsProcessing = true;
+        await _JS.InvokeVoidAsync("HideConfirmationModal");
+        if (IsConfirmed == true && BuyProductId > 0)
+        {
+            await _JS.ToastrSuccess("Product Add To Cart Successfully.");
+        }
+        else
+        {
+            await _JS.ToastrError("Error Encountered While Buying.");
+        }
+        await LoadProducts();
+        BuyProductId = 0;
+        IsProcessing = false;
+    }
+}

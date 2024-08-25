@@ -4,6 +4,7 @@
 @using YumBlazor.Data.Models
 @using YumBlazor.Repository.IRepository
 @using YumBlazor.Services.Extentions
+@using static YumBlazor.Components.Pages.Shared._SaveScrollPos
 
 @inject IProductRepository _productRepository
 @inject ICategoryRepository _categoryRepository
@@ -76,7 +77,9 @@ else
                                     <img src="@Product.ImageUrl" alt="..." class="img-thumbnail">
                                 </div>
                                 <div class="col-md-9">
-                                    <i class="bi bi-trash btn btn-outline-danger">Remove</i>
+                                    <button type="button" class="btn btn-danger" @onclick="DeleteImage">
+                                        <i class="bi bi-trash">Remove</i>
+                                    </button>
                                 </div>
                             </div>
                         }
@@ -167,6 +170,7 @@ else
     private async Task LoadFiles(InputFileChangeEventArgs e)
     {
         IsProcessing = true;
+        //var scrollPosition = await _JS.InvokeAsync<ScrollPosition>("scrollFunctions.saveScrollPosition");
         var file = e.File;
         FileInfo fileInfo = new(file.Name);
         var newFileName = $"{Guid.NewGuid()}.{fileInfo.Extension}";
@@ -180,6 +184,33 @@ else
         await file.OpenReadStream(file.Size).CopyToAsync(fileStream);
         Product.ImageUrl = $"/images/product/{newFileName}";
 
+        //await _JS.InvokeVoidAsync("scrollFunctions.restoreScrollPosition", scrollPosition);
+
         IsProcessing = false;
+        
     }
+    void DeleteImage()
+    {
+        if (Product.ImageUrl == null)
+        {
+            return;
+        }
+
+        var fileToDelete = Product.ImageUrl.Split('/').Reverse().First();
+
+        var filePathToDeleteImage = Path.Combine(_directoryPath, fileToDelete);
+
+        if (!File.Exists(filePathToDeleteImage))
+            return;
+
+        File.Delete(filePathToDeleteImage);
+
+        Product.ImageUrl = null;
+        return;
+    }
+    // public class ScrollPosition
+    // {
+    //     public int X { get; set; }
+    //     public int Y { get; set; }
+    // }
 }
